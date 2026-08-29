@@ -47,7 +47,7 @@ pub fn parse_go_codeblock(
 
 // TODO: check for multiline comments
 pub static GO_PACKAGE_RE: std::sync::LazyLock<Regex> =
-    std::sync::LazyLock::new(|| Regex::new(r"^\s*package\s+\w").unwrap());
+    std::sync::LazyLock::new(|| Regex::new(r"(?m)^\s*package\s+\w").unwrap());
 
 #[inline]
 pub fn remove_go_package(snippet: String) -> String {
@@ -153,6 +153,8 @@ mod test_go_package_re {
             "\n package \tmdsf",
             "\n package\tmdsf",
             "\n \tpackage\t\n\nmdsf\n",
+            "// mdsf\npackage mdsf",
+            "//go:build integration\n\npackage mdsf",
         ] {
             assert!(GO_PACKAGE_RE.is_match(s), "'{s}' did not match");
         }
